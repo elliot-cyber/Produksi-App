@@ -1,5 +1,5 @@
 <!-- ========================= -->
-<!-- home.html -->
+<!-- home.html REVISI -->
 <!-- ========================= -->
 
 <!DOCTYPE html>
@@ -7,7 +7,8 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Produksi App</title>
 
@@ -23,37 +24,107 @@
 
 <h1>INPUT PRODUKSI</h1>
 
-<input type="text" id="nama_leader" placeholder="Nama Leader">
+<div class="login-info">
 
-<input type="text" id="nama_wip" placeholder="Nama Barang">
+No Index:
+<span id="show_index"></span>
 
-<input type="number" id="jumlah_pallet" placeholder="Jumlah Pallet">
+</div>
 
-<input type="number" id="jumlah_layer" placeholder="Layer / Pallet">
+<input type="text"
+id="nama_leader"
+placeholder="Nama Leader">
 
-<input type="number" id="jumlah_case" placeholder="Case / Layer">
+<input type="text"
+id="nama_wip"
+placeholder="Nama Barang">
 
-<input type="number" id="jumlah_item" placeholder="Item / Case">
+<input type="number"
+id="jumlah_pallet"
+placeholder="Jumlah Pallet">
 
-<input type="number" id="harga_barang_item" placeholder="Harga Per Item">
+<input type="number"
+id="jumlah_layer"
+placeholder="Layer / Pallet">
 
-<input type="number" id="harga_barang_case" placeholder="Harga Per Case">
+<input type="number"
+id="jumlah_case"
+placeholder="Case / Layer">
 
-<input type="number" id="jumlah_anggota" placeholder="Jumlah Team">
+<input type="number"
+id="jumlah_item"
+placeholder="Item / Case">
 
-<button onclick="hitung()">HITUNG</button>
+<input type="number"
+id="harga_barang_item"
+placeholder="Harga Per Item">
 
-<button onclick="simpan()">SIMPAN</button>
+<input type="number"
+id="harga_barang_case"
+placeholder="Harga Per Case">
 
-<button onclick="hapus()">HAPUS</button>
+<input type="number"
+id="jumlah_anggota"
+placeholder="Jumlah Team">
 
-<button onclick="historyPage()">HISTORY</button>
+<button onclick="hitung()">
+HITUNG
+</button>
 
-<div class="hasil" id="hasil"></div>
+<button onclick="simpan()">
+SIMPAN
+</button>
+
+<button onclick="hapusForm()">
+HAPUS
+</button>
+
+<button onclick="historyPage()">
+HISTORY
+</button>
+
+<button onclick="logout()"
+class="logout">
+LOGOUT
+</button>
+
+<div class="hasil"
+id="hasil">
+
+Belum ada hasil produksi.
+
+</div>
 
 </div>
 
 <script>
+
+/* ========================= */
+/* CEK LOGIN */
+/* ========================= */
+
+let noIndex =
+localStorage.getItem("no_index");
+
+if(
+noIndex == null ||
+noIndex.trim() == ""
+){
+
+location.href = "index.html";
+
+}
+
+/* ========================= */
+/* TAMPILKAN NO INDEX */
+/* ========================= */
+
+document.getElementById("show_index")
+.innerHTML = noIndex;
+
+/* ========================= */
+/* FIREBASE */
+/* ========================= */
 
 const firebaseConfig = {
 apiKey: "AIzaSyDBQl3YCjVSCp4ivzo0K7v9atmHMOXdVf4",
@@ -70,149 +141,322 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
+/* ========================= */
+/* DATA SIMPAN */
+/* ========================= */
+
 let dataSimpan = {};
+
+/* ========================= */
+/* FORMAT TANGGAL */
+/* ========================= */
 
 function formatTanggal(){
 
 const bulan = [
-"Januari","Februari","Maret",
-"April","Mei","Juni",
-"Juli","Agustus","September",
-"Oktober","November","Desember"
+"Januari",
+"Februari",
+"Maret",
+"April",
+"Mei",
+"Juni",
+"Juli",
+"Agustus",
+"September",
+"Oktober",
+"November",
+"Desember"
 ];
 
 let d = new Date();
 
-return d.getDate() + "-" +
+return (
+d.getDate() + "-" +
 bulan[d.getMonth()] + "-" +
-d.getFullYear();
+d.getFullYear()
+);
 
 }
 
+/* ========================= */
+/* HITUNG */
+/* ========================= */
+
 function hitung(){
 
-let pallet =
-parseInt(document.getElementById("jumlah_pallet").value);
-
-let layer =
-parseInt(document.getElementById("jumlah_layer").value);
-
-let cases =
-parseInt(document.getElementById("jumlah_case").value);
-
-let item =
-parseInt(document.getElementById("jumlah_item").value);
-
-let hargaItem =
-document.getElementById("harga_barang_item").value;
-
-let hargaCase =
-document.getElementById("harga_barang_case").value;
-
-let team =
-parseInt(document.getElementById("jumlah_anggota").value);
-
 let leader =
-document.getElementById("nama_leader").value;
+document.getElementById("nama_leader")
+.value.trim();
 
 let barang =
-document.getElementById("nama_wip").value;
+document.getElementById("nama_wip")
+.value.trim();
+
+let pallet =
+parseInt(
+document.getElementById("jumlah_pallet")
+.value
+);
+
+let layer =
+parseInt(
+document.getElementById("jumlah_layer")
+.value
+);
+
+let cases =
+parseInt(
+document.getElementById("jumlah_case")
+.value
+);
+
+let item =
+parseInt(
+document.getElementById("jumlah_item")
+.value
+);
+
+let hargaItem =
+document.getElementById("harga_barang_item")
+.value;
+
+let hargaCase =
+document.getElementById("harga_barang_case")
+.value;
+
+let team =
+parseInt(
+document.getElementById("jumlah_anggota")
+.value
+);
+
+/* VALIDASI */
+
+if(
+leader == "" ||
+barang == "" ||
+isNaN(pallet) ||
+isNaN(layer) ||
+isNaN(cases) ||
+isNaN(item) ||
+isNaN(team)
+){
+
+alert("ISI SEMUA FORM");
+
+return;
+
+}
+
+if(
+hargaItem == "" &&
+hargaCase == ""
+){
+
+alert("ISI HARGA ITEM ATAU CASE");
+
+return;
+
+}
+
+/* TOTAL ITEM */
 
 let totalItem =
-pallet * layer * cases * item;
+pallet *
+layer *
+cases *
+item;
+
+/* TOTAL CASE */
 
 let totalCase =
-pallet * layer * cases;
+pallet *
+layer *
+cases;
+
+/* TOTAL OUTPUT */
 
 let totalOutput = 0;
 
 if(hargaItem != ""){
 
 totalOutput =
-totalItem * parseInt(hargaItem);
+totalItem *
+parseInt(hargaItem);
 
 }else{
 
 totalOutput =
-totalCase * parseInt(hargaCase);
+totalCase *
+parseInt(hargaCase);
 
 }
 
+/* HASIL INDIVIDU */
+
 let hasilIndividu =
-Math.floor(totalOutput / team);
+Math.floor(
+totalOutput / team
+);
+
+/* OUTPUT */
 
 let hasilText = `
-<b>Timer:</b> ${formatTanggal()} <br><br>
 
-<b>Nama Leader:</b> ${leader}<br><br>
+<b>Timer:</b>
+${formatTanggal()}
+<br><br>
 
-<b>Nama Barang:</b> ${barang}<br><br>
+<b>Nama Leader:</b>
+${leader}
+<br><br>
 
-<b>Jumlah Pallet:</b> ${pallet} Pallet<br><br>
+<b>Nama Barang:</b>
+${barang}
+<br><br>
 
-<b>Jumlah Layer:</b> ${layer} Layer/Pallet<br><br>
+<b>Jumlah Pallet:</b>
+${pallet} Pallet
+<br><br>
 
-<b>Jumlah Case:</b> ${cases} Case/Layer<br><br>
+<b>Jumlah Layer:</b>
+${layer} Layer/Pallet
+<br><br>
 
-<b>Jumlah Item:</b> ${item} Item/Case<br><br>
+<b>Jumlah Case:</b>
+${cases} Case/Layer
+<br><br>
 
-<b>Total Produksi:</b> ${totalItem} Item<br><br>
+<b>Jumlah Item:</b>
+${item} Item/Case
+<br><br>
 
-<b>Total Semua Hasil:</b> Rp ${totalOutput.toLocaleString()}<br><br>
+<b>Total Produksi:</b>
+${totalItem} Item
+<br><br>
 
-<b>Jumlah Team:</b> ${team} Orang<br><br>
+<b>Total Semua Hasil:</b>
+Rp ${totalOutput.toLocaleString()}
+<br><br>
 
-<b>Hasil Individu:</b> Rp ${hasilIndividu.toLocaleString()} / Orang
+<b>Jumlah Team:</b>
+${team} Orang
+<br><br>
+
+<b>Hasil Individu:</b>
+Rp ${hasilIndividu.toLocaleString()} / Orang
+
 `;
 
-document.getElementById("hasil").innerHTML =
-hasilText;
+document.getElementById("hasil")
+.innerHTML = hasilText;
+
+/* DATA SIMPAN */
 
 dataSimpan = {
+
 tanggal: formatTanggal(),
+
+no_index: noIndex,
+
 leader: leader,
+
 barang: barang,
+
 pallet: pallet,
+
 layer: layer,
+
 cases: cases,
+
 item: item,
+
 harga_item: hargaItem,
+
 harga_case: hargaCase,
+
 team: team,
+
 total_item: totalItem,
+
 total_output: totalOutput,
-hasil_individu: hasilIndividu
+
+hasil_individu: hasilIndividu,
+
+timestamp: Date.now()
+
 };
 
 }
 
+/* ========================= */
+/* SIMPAN */
+/* ========================= */
+
 function simpan(){
 
-if(Object.keys(dataSimpan).length == 0){
+if(
+Object.keys(dataSimpan).length == 0
+){
+
 alert("HITUNG DULU");
+
 return;
-}
-
-db.ref("production_history").push(dataSimpan);
-
-alert("DATA TERSIMPAN");
-
-document.getElementById("hasil").innerHTML = "";
-
-hapus();
 
 }
 
-function hapus(){
+db.ref("production_history")
+.push(dataSimpan);
 
-document.querySelectorAll("input").forEach(input=>{
+alert("DATA BERHASIL DISIMPAN");
+
+/* RESET */
+
+document.getElementById("hasil")
+.innerHTML =
+"Belum ada hasil produksi.";
+
+hapusForm();
+
+dataSimpan = {};
+
+}
+
+/* ========================= */
+/* HAPUS FORM */
+/* ========================= */
+
+function hapusForm(){
+
+document.querySelectorAll("input")
+.forEach(input=>{
+
 input.value = "";
+
 });
 
 }
 
+/* ========================= */
+/* HISTORY */
+/* ========================= */
+
 function historyPage(){
+
 location.href = "history.html";
+
+}
+
+/* ========================= */
+/* LOGOUT */
+/* ========================= */
+
+function logout(){
+
+localStorage.removeItem("no_index");
+
+location.href = "index.html";
+
 }
 
 </script>
