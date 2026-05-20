@@ -25,7 +25,6 @@
 <button onclick="login()">LOGIN</button>
 
 </div>
-
 <script>
 
 const firebaseConfig = {
@@ -43,26 +42,55 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-if(localStorage.getItem("no_index")){
+let savedIndex = localStorage.getItem("no_index");
+
+/*
+CEK LOGIN
+*/
+if(
+savedIndex != null &&
+savedIndex.trim() != ""
+){
+
 location.href = "home.html";
+
 }
 
+/*
+LOGIN
+*/
 function login(){
 
 let noIndex =
-document.getElementById("no_index").value;
+document.getElementById("no_index")
+.value
+.trim();
 
-if(noIndex == ""){
-alert("ISI NO INDEX");
+if(noIndex === ""){
+
+alert("NO INDEX WAJIB DIISI");
 return;
+
 }
 
+/*
+SIMPAN FIREBASE
+*/
 db.ref("users/" + noIndex).set({
-no_index: noIndex
+no_index: noIndex,
+login_time: new Date().toISOString()
 });
 
+/*
+SIMPAN LOCAL
+*/
 localStorage.setItem("no_index", noIndex);
 
+alert("LOGIN BERHASIL");
+
+/*
+PINDAH HALAMAN
+*/
 location.href = "home.html";
 
 }
