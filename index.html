@@ -1,0 +1,73 @@
+<!-- ========================= -->
+<!-- index.html (LOGIN PAGE) -->
+<!-- ========================= -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Produksi</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>LOGIN PRODUKSI</h1>
+
+<input type="text" id="no_index" placeholder="Masukkan No Index">
+
+<button onclick="login()">LOGIN</button>
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyDBQl3YCjVSCp4ivzo0K7v9atmHMOXdVf4",
+authDomain: "produksi-app.firebaseapp.com",
+databaseURL: "https://produksi-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "produksi-app",
+storageBucket: "produksi-app.firebasestorage.app",
+messagingSenderId: "603637906295",
+appId: "1:603637906295:web:ac13c6414cb0689943ff72",
+measurementId: "G-74KWX5F9D0"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+if(localStorage.getItem("no_index")){
+location.href = "home.html";
+}
+
+function login(){
+
+let noIndex =
+document.getElementById("no_index").value;
+
+if(noIndex == ""){
+alert("ISI NO INDEX");
+return;
+}
+
+db.ref("users/" + noIndex).set({
+no_index: noIndex
+});
+
+localStorage.setItem("no_index", noIndex);
+
+location.href = "home.html";
+
+}
+
+</script>
+
+</body>
+</html>
